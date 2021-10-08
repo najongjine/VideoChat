@@ -94,8 +94,11 @@ socket.on("ready", function () {
     rtcPeerConnection.onicecandidate = OnIceCandidateFunction;
     // auto triggered when media stream comes from remote client
     rtcPeerConnection.ontrack = OnTrackFunction;
-    rtcPeerConnection.addTrack(userStream.getTracks()[0], userStream);
-    rtcPeerConnection.addTrack(userStream.getTracks()[1], userStream);
+    // for sensing local media stream to remote
+    rtcPeerConnection.addTrack(userStream.getTracks()[0], userStream); // audio stream
+    rtcPeerConnection.addTrack(userStream.getTracks()[1], userStream); // video stream
+
+    // SDP. Information about media
     rtcPeerConnection
       .createOffer()
       .then((offer) => {
@@ -156,6 +159,7 @@ function OnIceCandidateFunction(event) {
 // Implementing the OnTrackFunction which is part of the RTCPeerConnection Interface.
 
 function OnTrackFunction(event) {
+  // event.streams contains all the called streams. this is 1:1 video chat, so there's only 1 called stream which is index 0
   peerVideo.srcObject = event.streams[0];
   peerVideo.onloadedmetadata = function (e) {
     peerVideo.play();
