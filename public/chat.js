@@ -98,7 +98,7 @@ socket.on("ready", function () {
     rtcPeerConnection.addTrack(userStream.getTracks()[0], userStream); // audio stream
     rtcPeerConnection.addTrack(userStream.getTracks()[1], userStream); // video stream
 
-    // SDP. Information about media
+    // SDP. Information about media. local side is offer
     rtcPeerConnection
       .createOffer()
       .then((offer) => {
@@ -113,7 +113,7 @@ socket.on("ready", function () {
 });
 
 // Triggered on receiving an ice candidate from the peer.
-
+// ice candidate is public ip address
 socket.on("candidate", function (candidate) {
   let icecandidate = new RTCIceCandidate(candidate);
   rtcPeerConnection.addIceCandidate(icecandidate);
@@ -129,6 +129,8 @@ socket.on("offer", function (offer) {
     rtcPeerConnection.addTrack(userStream.getTracks()[0], userStream);
     rtcPeerConnection.addTrack(userStream.getTracks()[1], userStream);
     rtcPeerConnection.setRemoteDescription(offer);
+
+    // remote side is answer
     rtcPeerConnection
       .createAnswer()
       .then((answer) => {
