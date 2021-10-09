@@ -17,7 +17,7 @@ let io = socket(server);
 //Triggered when a client is connected.
 
 io.on("connection", function (socket) {
-  console.log("User Connected :" + socket.id);
+  console.log("# User Connected :" + socket.id);
 
   //Triggered when a peer hits the join room button.
 
@@ -37,30 +37,33 @@ io.on("connection", function (socket) {
       //when there are already two people inside the room.
       socket.emit("full");
     }
-    console.log(rooms);
+    console.log("## join. ", rooms);
   });
 
   //Triggered when the person who joined the room is ready to communicate.
   socket.on("ready", function (roomName) {
+    console.log("## ready");
     socket.broadcast.to(roomName).emit("ready"); //Informs the other peer in the room.
   });
 
   //Triggered when server gets an icecandidate from a peer in the room.
 
   socket.on("candidate", function (candidate, roomName) {
-    console.log(candidate);
+    console.log("## candidate: ", candidate);
     socket.broadcast.to(roomName).emit("candidate", candidate); //Sends Candidate to the other peer in the room.
   });
 
   //Triggered when server gets an offer from a peer in the room.
 
   socket.on("offer", function (offer, roomName) {
+    console.log("## offer");
     socket.broadcast.to(roomName).emit("offer", offer); //Sends Offer to the other peer in the room.
   });
 
   //Triggered when server gets an answer from a peer in the room.
 
   socket.on("answer", function (answer, roomName) {
+    console.log("## answer");
     socket.broadcast.to(roomName).emit("answer", answer); //Sends Answer to the other peer in the room.
   });
 });

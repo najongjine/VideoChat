@@ -35,7 +35,8 @@ socket.on("created", function () {
   navigator.mediaDevices
     .getUserMedia({
       audio: true,
-      video: { width: 1280, height: 720 },
+      //video: { width: 1280, height: 720 },
+      video: true,
     })
     .then(function (stream) {
       /* use the stream */
@@ -55,12 +56,14 @@ socket.on("created", function () {
 // Triggered when a room is succesfully joined.
 
 socket.on("joined", function () {
+  console.log('## socket.on("joined"');
   creator = false;
 
   navigator.mediaDevices
     .getUserMedia({
       audio: true,
-      video: { width: 1280, height: 720 },
+      //video: { width: 1280, height: 720 },
+      video: true,
     })
     .then(function (stream) {
       /* use the stream */
@@ -71,6 +74,7 @@ socket.on("joined", function () {
         userVideo.play();
       };
       socket.emit("ready", roomName);
+      console.log('## socket.emit("ready"');
     })
     .catch(function (err) {
       /* handle the error */
@@ -87,6 +91,7 @@ socket.on("full", function () {
 // Triggered when a peer has joined the room and ready to communicate.
 
 socket.on("ready", function () {
+  console.log('## socket.on("ready"), setup rtc');
   if (creator) {
     // create peer connection interface
     rtcPeerConnection = new RTCPeerConnection(iceServers);
@@ -99,11 +104,13 @@ socket.on("ready", function () {
     rtcPeerConnection.addTrack(userStream.getTracks()[1], userStream); // video stream
 
     // SDP. Information about media. local side is offer
+    console.log('## socket.on("ready"), rtcPeerConnection.createOffer()');
     rtcPeerConnection
       .createOffer()
       .then((offer) => {
         rtcPeerConnection.setLocalDescription(offer);
         socket.emit("offer", offer, roomName);
+        console.log('## socket.emit("offer")');
       })
 
       .catch((error) => {
@@ -115,6 +122,7 @@ socket.on("ready", function () {
 // Triggered on receiving an ice candidate from the peer.
 // ice candidate is public ip address
 socket.on("candidate", function (candidate) {
+  console.log('## socket.on("candidate"), addIceCandidate');
   let icecandidate = new RTCIceCandidate(candidate);
   rtcPeerConnection.addIceCandidate(icecandidate);
 });
@@ -122,6 +130,7 @@ socket.on("candidate", function (candidate) {
 // Triggered on receiving an offer from the person who created the room.
 
 socket.on("offer", function (offer) {
+  console.log('## socket.on("offer"), setup rtc');
   if (!creator) {
     rtcPeerConnection = new RTCPeerConnection(iceServers);
     rtcPeerConnection.onicecandidate = OnIceCandidateFunction;
@@ -131,11 +140,13 @@ socket.on("offer", function (offer) {
     rtcPeerConnection.setRemoteDescription(offer);
 
     // remote side is answer
+    console.log('## socket.on("offer"), rtcPeerConnection.createAnswer()');
     rtcPeerConnection
       .createAnswer()
       .then((answer) => {
         rtcPeerConnection.setLocalDescription(answer);
         socket.emit("answer", answer, roomName);
+        console.log('## socket.emit("answer")');
       })
       .catch((error) => {
         console.log(error);
@@ -146,13 +157,16 @@ socket.on("offer", function (offer) {
 // Triggered on receiving an answer from the person who joined the room.
 
 socket.on("answer", function (answer) {
+  console.log(
+    '## socket.on("answer"), rtcPeerConnection.setRemoteDescription(answer)'
+  );
   rtcPeerConnection.setRemoteDescription(answer);
 });
 
 // Implementing the OnIceCandidateFunction which is part of the RTCPeerConnection Interface.
 
 function OnIceCandidateFunction(event) {
-  console.log("Candidate");
+  console.log('## OnIceCandidateFunction, socket.emit("candidate")');
   if (event.candidate) {
     socket.emit("candidate", event.candidate, roomName);
   }
@@ -161,6 +175,7 @@ function OnIceCandidateFunction(event) {
 // Implementing the OnTrackFunction which is part of the RTCPeerConnection Interface.
 
 function OnTrackFunction(event) {
+  console.log("## OnTrackFunction");
   // event.streams contains all the called streams. this is 1:1 video chat, so there's only 1 called stream which is index 0
   peerVideo.srcObject = event.streams[0];
   peerVideo.onloadedmetadata = function (e) {

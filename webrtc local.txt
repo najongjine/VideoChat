@@ -1,0 +1,10 @@
+## socket.on("ready"), setup rtc chat.js:94:11
+## socket.on("ready"), rtcPeerConnection.createOffer() chat.js:107:13
+## socket.emit("offer") chat.js:113:17
+## OnIceCandidateFunction, socket.emit("candidate") 8 chat.js:169:11
+## socket.on("answer"), rtcPeerConnection.setRemoteDescription(answer) chat.js:160:11
+## OnTrackFunction 2 chat.js:178:11
+## OnIceCandidateFunction, socket.emit("candidate") chat.js:169:11
+## socket.on("candidate"), addIceCandidate 2 chat.js:125:11
+## OnIceCandidateFunction, socket.emit("candidate") 3 chat.js:169:11
+## socket.on("candidate"), addIceCandidate 2 chat.js:125:11

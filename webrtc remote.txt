@@ -1,0 +1,12 @@
+## socket.on("joined" chat.js:59:11
+## socket.emit("ready" chat.js:77:15
+## socket.on("offer"), setup rtc chat.js:133:11
+## socket.on("offer"), rtcPeerConnection.createAnswer() chat.js:143:13
+## socket.on("candidate"), addIceCandidate chat.js:125:11
+## OnTrackFunction 2 chat.js:178:11
+## socket.on("candidate"), addIceCandidate 3 chat.js:125:11
+## socket.emit("answer") chat.js:149:17
+## socket.on("candidate"), addIceCandidate 4 chat.js:125:11
+## OnIceCandidateFunction, socket.emit("candidate") 2 chat.js:169:11
+## socket.on("candidate"), addIceCandidate 3 chat.js:125:11
+## OnIceCandidateFunction, socket.emit("candidate") 3 chat.js:169:11
